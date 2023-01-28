@@ -1,0 +1,69 @@
+user  {{ app_user }} {{ app_group }};
+worker_processes {{ ansible_processor_vcpus }};
+
+events {
+    worker_connections  {{ ansible_processor_vcpus * 1024 }};
+}
+
+
+http {
+    passenger_root /opt/passenger-{{ passenger_version }};
+    passenger_ruby /opt/ruby-{{ ruby_version }}/bin/ruby;
+    passenger_instance_registry_dir /var/run/passenger-instreg;
+    passenger_app_env {{ app_env }};
+
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    sendfile        on;
+
+    keepalive_timeout  65;
+
+    gzip  on;
+
+    server {
+        listen       80 default_server;
+        server_name  {{ server_name }};
+
+        root {{ app_root }}/current/public;
+        passenger_enabled on;
+
+        location ~ "^/assets/.+-([0-9a-f]{32}|[0-9a-f]{64})\..+" {
+          error_page 490 = @static_asset;
+          error_page 491 = @dynamic_request;
+          recursive_error_pages on;
+
+          if (-f $request_filename) {
+            return 490;
+          }
+
+          if (!-f $request_filename) {
+            return 491;
+          }
+        }
+
+        location ~ "^/packs/.+" {
+            error_page 490 = @static_asset;
+            error_page 491 = @dynamic_request;
+            recursive_error_pages on;
+
+            if (-f $request_filename) {
+                return 490;
+            }
+            if (!-f $request_filename) {
+                return 491;
+            }
+        }
+
+        location @static_asset {
+          gzip_static on;
+          expires max;
+          add_header Cache-Control public;
+          add_header ETag "";
+        }
+
+        location @dynamic_request {
+          passenger_enabled on;
+        }
+    }
+}

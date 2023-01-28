@@ -1,0 +1,69 @@
+- hosts: all
+  become: true
+  collections:
+    - jerryshockley.rails
+  vars:
+    install: yes
+    setup: yes
+
+  tasks:
+    - name: Update Package Cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Upgrade the OS (apt-get dist-upgrade)
+      ansible.builtin.apt:
+        upgrade: dist
+
+    - name: Upgrade All Packages
+      ansible.builtin.apt:
+        name: "*"
+        state: latest
+
+    - name: Common Packages
+      ansible.builtin.apt:
+        name:
+          - git
+          - vim
+          - sudo
+        state: present
+        
+
+    - name: Installing Redis Server
+      ansible.builtin.apt:
+        name:
+          - redis-server
+        state: present
+
+    - name: Adding System users
+      ansible.builtin.include_tasks:
+        file: tasks/add_users.yml
+      when: ansible_user != "vagrant"
+
+    - name: Securing Server
+      ansible.builtin.include_tasks:
+        file: tasks/secure_server.yml
+      when: ansible_user != "vagrant"
+
+    - ansible.builtin.include_role:
+        name: logrotate
+    - ansible.builtin.include_role:
+        name: ruby
+    - ansible.builtin.include_role:
+        name: nginxinc.nginx
+    - ansible.builtin.include_role:
+        name: nodejs
+    - ansible.builtin.include_role:
+        name: geerlingguy.postgresql
+    - ansible.builtin.include_role:
+        name: weareinteractive.ufw
+    - ansible.builtin.include_role:
+        name: hifis.unattended_upgrades
+
+    - name: Install Postgresql Gem
+      gem:
+        name: pg
+        executable: "/opt/ruby-{{ ruby_version }}/bin/gem"
+        user_install: no
+      when: postgres is defined and postgres|bool

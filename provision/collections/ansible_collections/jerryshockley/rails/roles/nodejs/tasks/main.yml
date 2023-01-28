@@ -1,0 +1,32 @@
+---
+
+- name: Get Node Binary
+  get_url:
+    url: "https://nodejs.org/dist/v{{ node_version }}/node-v{{ node_version }}-linux-x64.tar.xz"
+    dest: "/tmp/node-{{ node_version }}.tar.xz"
+  register: node_binary
+
+- name: Unarchive Node Binary
+  unarchive:
+    src: "{{ node_binary.dest }}"
+    dest: /opt
+    remote_src: true
+  when: node_binary.changed
+
+- name: Create /etc/profile.d/node.sh
+  lineinfile:
+    dest: /etc/profile.d/node.sh
+    owner: root
+    group: root
+    mode: 0644
+    create: yes
+    regexp: "^export PATH=/opt/node-"
+    line: "export PATH=/opt/node-v{{ node_version }}-linux-x64/bin:$PATH"
+
+- name: Clear Node Src
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "/tmp/node-{{ node_version }}.tar.xz"
+  when: clear is defined and clear|bool

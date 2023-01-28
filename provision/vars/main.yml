@@ -1,0 +1,50 @@
+---
+postgres_users_no_log: true
+
+# Ansible inventory file used by playbook: provision_debian.yml.
+# This file is created if it doesn't already exist.
+app_directory: '/var/www/iicreeks'
+# Variables for our app.
+app_version: 1.2.2
+app_user: www-data
+app_secrets:
+   dev:  fe562ec1e21eecc5af4d83f6a157af
+   test: 4408f36dd290766d2f368fdfcedf4f
+   prod: 9bf801da1a24c9a103ea86a1438caf
+
+# Variables for Passenger and Nginx.
+passenger_server_name: 0.0.0.0
+passenger_app_root: "{{ app_directory }}/public"
+passenger_app_env: production
+passenger_ruby: /usr/local/bin/ruby
+
+nodejs_version: "lts-hydrogen"
+npm_version: ^8.19
+global_node_packages:
+  - {name: 'nodemon', version: '^2.0.7'}
+prod_db_name: iicreeks_prod
+dev_db_name: iicreeks_dev
+git_repo: https://github.com/JerryShockley/iicreeks.git
+# nodejs_install_npm_user: "{{ ansible_user }}"
+# Priviliged user (with sudo privileges) used to ssh into server.
+privileged_user: jerrys
+# privileged_user_sys_password: "{{ vault_privileged_user_sys_password }}"
+# Unpriviliged user (without sudo privileges) used to operate server
+# infrastructure.
+# To create db and roles. Not a superuser.
+# app_user: auser
+# app_user_sys_password: "{{ vault_app_user_sys_password }}"
+
+# Postgresql driver for Python3
+postgresql_python_library: python3-psycopg2
+
+postgresql_databases:
+  - name: "{{ db_name }}"
+
+www_root_dir: "/var/www/iicreeks/public"
+
+postgresql_global_config_options:
+  - option: unix_socket_directories
+    value: '{{ postgresql_unix_socket_directories | join(",") }}'
+  - option: listen_addresses
+    value: "*"

@@ -1,0 +1,28 @@
+---
+
+- name: Add group
+  group:
+    name: "{{ app_group }}"
+    gid: 10000
+
+- name: Add user
+  user:
+    name: "{{ app_user }}"
+    uid: 10000
+    group: "{{ app_group }}"
+
+- name: Setup home directory
+  file:
+    dest: "/home/{{ app_user }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: 0755
+    state: directory
+
+- name: Setup .ssh directory
+  file:
+    dest: "/home/{{ app_user }}/.ssh"
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: 0700
+    state: directory

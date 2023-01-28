@@ -1,0 +1,70 @@
+---
+
+- name: Add access control list utilities.
+  apt:
+    name: acl
+    cache_valid_time: 7200
+  become: true
+
+- name: Create user groups
+  group:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ ugroups }}" 
+  
+  # This strategy is secure for a few privileged accounts, but
+  # should be rethought if there will be many users.
+- name: Allow 'sudo' group to have passwordless sudo
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: "^%sudo"
+    line: "%sudo ALL=(ALL) NOPASSWD: ALL"
+    validate: /usr/sbin/visudo -cf %s
+  become: true
+  when: passwordless_sudo is true
+
+- name: Setup private SSH key
+  copy:
+    content: "{{ deploy_key }}"
+    dest: "/home/{{ app_user }}/.ssh/id_rsa"
+    mode: 0600
+    owner: deploy
+    group: deploy
+  no_log: true
+  when: private_key is defined
+
+- name: Setup authorized users' Public SSH key(s).
+  ansible.posix.authorized_key:
+    user: "{{ app_user }}"
+    state: present
+    key: "{{ item }}"
+  no_log: true
+  loop: "{{ authorized_keys }}"
+  become: true
+  when: authorized_keys is defined
+
+- name: Enable options in sshd_config
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    state: present
+    regexp: "(?i)^{{ item }}\\s+no"
+    line: "{{ item }} yes"
+  loop:
+    - AllowTcpForwarding   # For remote GUI DB Mgr access
+
+- name: Disable options in sshd_config
+  lineinfile:
+    path: /etc/ssh/ssh_config
+    state: present
+    regexp: "(?i)^{{ item }}\\s+yes"
+    line: "{{ item }} no"
+  loop:
+    - PasswordAuthentication
+    - PermitRootLogin
+
+- name: Restart ssh service
+  service:
+    name: ssh.service
+    state: restarted
+  become: true

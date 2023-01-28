@@ -1,0 +1,16 @@
+---
+
+galaxy_info:
+  role_name: logrotate
+  author: Aotokitsuruya
+  description: Logrotate Role for Rails
+  license: Apache-2.0
+  min_ansible_version: 2.9.0
+  github_branch: master
+  platforms:
+    - name: EL
+      versions:
+        - 7
+  galaxy_tags:
+    - centos
+dependencies: []

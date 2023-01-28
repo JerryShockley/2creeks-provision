@@ -1,0 +1,30 @@
+---
+
+- name: Setup Firewall to allow incoming HTTP/HTTPS
+  firewalld:
+    service: "{{ item }}"
+    permanent: yes
+    immediate: yes
+    state: enabled
+  loop:
+    - http
+    - https
+  when: firewall is defined
+
+- name: Load Extra Modules
+  include_role:
+    name: "{{ module_name }}"
+    public: true
+  loop: "{{ nginx_extra_modules }}"
+  loop_control:
+    loop_var: module_name
+
+- name: Prepare nginx.conf
+  template:
+    src: "{{ nginx_config_template }}"
+    dest: "/opt/nginx/conf/nginx.conf"
+    owner: root
+    group: root
+    mode: 0644
+    backup: yes
+  notify: restart nginx

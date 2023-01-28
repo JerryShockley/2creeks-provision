@@ -1,0 +1,26 @@
+user  {{ app_user }} {{ app_group }};
+worker_processes {{ ansible_processor_vcpus }};
+
+events {
+    worker_connections  {{ ansible_processor_vcpus * 1024 }};
+}
+
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    sendfile        on;
+
+    keepalive_timeout  65;
+
+    gzip  on;
+    server_tokens off;
+
+    server {
+        listen       80 default_server;
+        server_name  {{ server_name }};
+
+        root {{ app_root }};
+    }
+}

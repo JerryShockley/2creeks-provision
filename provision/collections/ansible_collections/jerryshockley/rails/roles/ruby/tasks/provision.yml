@@ -1,0 +1,75 @@
+---
+
+- name: Install Ruby Dependencies
+  ansible.builtin.apt:
+    name:
+      - build-essential
+      - libreadline-dev
+      - libssl-dev
+      - zlib1g-dev
+      - libffi-dev
+      - libyaml-dev
+      - libtool
+      - autoconf
+      - libgdbm-dev
+    state: present
+
+- name: Get Ruby source code
+  get_url:
+    url: "https://cache.ruby-lang.org/pub/ruby/{{ ruby_version | regex_replace('^([0-9]\\.[0-9])[0-9\\.]*$', '\\1') }}/ruby-{{ ruby_version }}.tar.gz"
+    dest: "/tmp/ruby-{{ ruby_version }}.tar.gz"
+  register: ruby_source
+
+- name: Unarchive Ruby source code
+  unarchive:
+    src: "{{ ruby_source.dest }}"
+    dest: /tmp
+    remote_src: true
+  when: ruby_source.changed
+  register: ruby_source_code
+
+- name: Configure Ruby
+  command: "./configure --prefix=/opt/ruby-{{ ruby_version }} --disable-install-doc --with-ruby-version=minor"
+  args:
+    chdir: "/tmp/ruby-{{ ruby_version }}"
+  when: ruby_source_code.changed
+  register: ruby_configured
+
+- name: Install Ruby
+  shell: "make --jobs {{ ansible_processor_vcpus }} && make install"
+  args:
+    chdir: "/tmp/ruby-{{ ruby_version }}"
+  when: ruby_configured.changed
+
+- name: Create /etc/profile.d/ruby.sh
+  lineinfile:
+    dest: /etc/profile.d/ruby.sh
+    owner: root
+    group: root
+    mode: 0644
+    create: yes
+    regexp: "^export PATH=/opt/ruby-"
+    line: "export PATH=/opt/ruby-{{ ruby_version }}/bin:$PATH"
+
+- name: Install Rubygem psych #Required for Bundler
+  gem:
+    name: psych
+    executable: "/opt/ruby-{{ ruby_version }}/bin/gem"
+    user_install: no
+
+- name: Setup Bundler
+  gem:
+    name: bundler
+    version: "{{ bundler_version | default(omit) }}"
+    executable: "/opt/ruby-{{ ruby_version }}/bin/gem"
+    user_install: no
+  when: bundler is defined and bundler|bool
+
+- name: Clear Ruby source code
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "/tmp/ruby-{{ ruby_version }}"
+    - "/tmp/ruby-{{ ruby_version }}.tar.gz"
+  when: clear is defined and clear|bool

@@ -1,0 +1,22 @@
+---
+
+logrotate:
+  - name: application
+    path: "/srv/app/current/log/*.log"
+    options:
+      - daily
+      - size 25M
+      - missingok
+      - compress
+      - delaycompress
+      - copytruncate
+  - name: nginx
+    paths:
+      - "/opt/nginx/logs/*.log"
+    options:
+      - daily
+      - size 25M
+      - missingok
+      - compress
+      - delaycompress
+      - copytruncate

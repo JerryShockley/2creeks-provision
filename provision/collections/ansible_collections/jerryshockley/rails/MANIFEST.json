@@ -1,0 +1,33 @@
+{
+ "collection_info": {
+  "namespace": "jerryshockley",
+  "name": "rails",
+  "version": "0.1.1",
+  "authors": [
+   "Aotokitsuruya <contact@frost.tw>"
+  ],
+  "readme": "README.md",
+  "tags": [
+   "ruby",
+   "rails"
+  ],
+  "description": "The Ruby on Rails provision tasks",
+  "license": [
+   "Apache-2.0"
+  ],
+  "license_file": null,
+  "dependencies": {},
+  "repository": "https://github.com/jerryshockley/ansible-rails",
+  "documentation": null,
+  "homepage": "https://github.com/jerryshockley/ansible-rails",
+  "issues": "https://github.com/jerryshockley/ansible-rails/issues"
+ },
+ "file_manifest_file": {
+  "name": "FILES.json",
+  "ftype": "file",
+  "chksum_type": "sha256",
+  "chksum_sha256": "285e9fdf2ae8b51542a7e40ad9020e915ad6d401ae6c813e742a8affad3e1386",
+  "format": 1
+ },
+ "format": 1
+}

@@ -1,0 +1,15 @@
+---
+
+- name: Install Logrotate
+  ansible.builtin.apt:
+    name:
+      - logrotate
+    state: present
+  when: install is defined and install|bool
+
+- name: Configure Logrotate
+  template:
+    src: logrotate.d.j2
+    dest: "/etc/logrotate.d/{{ item.name }}"
+  loop: "{{ logrotate }}"
+  when: logrotate is defined

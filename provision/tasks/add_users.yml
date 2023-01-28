@@ -1,0 +1,25 @@
+---
+- name: Add access control list utilities.
+  apt:
+    name: acl
+    cache_valid_time: 7200
+  become: true
+
+- name: Create user groups
+  group:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ ugroups }}"
+
+- name: Create system users.
+  user:
+    name: "{{ item.name }}"
+    state: present
+    groups: "{{ item.ugroups | default(omit) }}"
+    append: false
+    create_home: true
+    shell: /bin/bash
+  loop: "{{ users|default([]) }}"
+  when: item.ugroups is defined
+  register: createusr
+  become: true
