@@ -25,7 +25,7 @@
       ansible.builtin.apt:
         name:
           - git
-          - vim
+          - neovim
           - sudo
         state: present
         
@@ -67,3 +67,8 @@
         executable: "/opt/ruby-{{ ruby_version }}/bin/gem"
         user_install: no
       when: postgres is defined and postgres|bool
+
+    - name: Ensure Rails app folder exists.
+      ansible.builtin.file:
+        path: "{{ app_path }}"
+        state: directory 
