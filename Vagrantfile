@@ -34,7 +34,7 @@ Vagrant.configure("2") do |config|
   # Ansible provisioner.
   config.vm.provision "ansible" do |ansible|
     ansible.compatibility_mode="2.0"
-    ansible.playbook = 'ansible/setup.yml'
+    ansible.playbook = 'provision/setup.yml'
     ansible.host_vars = {
       "ansible_python_interpreter" => "/usr/bin/python3",
       "ansible_ssh_extra_args" => "-o StrictHostKeyChecking=no"
