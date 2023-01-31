@@ -22,7 +22,7 @@ Vagrant.configure("2") do |config|
   config.vm.network "forwarded_port", guest: "9229",
     host: vars['debugport'], auto_correct: true
   config.ssh.insert_key = false
-  config.vm.synced_folder vars['hfolder'], guest_sync_dir
+  config.vm.synced_folder vars['hfolder'], guest_sync_dir, create: true
 
   config.vm.provider "parallels" do |prl|
     prl.name = "iicreeksApp-vm"
