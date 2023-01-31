@@ -1,1 +1,0 @@
-{"parallels":{"/var/www/iicreeks":{"guestpath":"/var/www/iicreeks","hostpath":"/Users/jerrys/src/iicreeks","disabled":false,"__vagrantfile":true},"/vagrant":{"guestpath":"/vagrant","hostpath":"/Users/jerrys/src/iicreeks","disabled":false,"__vagrantfile":true}}}
