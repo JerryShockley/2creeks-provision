@@ -1,10 +1,13 @@
 ---
-app_user: deploy
+app_user: jerry
+privileged_user: "{{ app_user }}"
 app_group: deploy
-app_environment:
-  RAILS_ENV: production
+app_environment: production
+# All user groups assigned to any system user.
+ugroups:
+  - sudo
+  - "{{ app_group }}"
 
-postgres_database: iicreeks_prod
 # Vault encypted passwords
 priv_user_db_password: "{{ vault_privileged_user_db_password }}"
 jenna_db_password: "{{ vault_jenna_db_password }}"
@@ -28,14 +31,14 @@ ufw_logging: full
 ufw_applications:
   - { name: "OpenSSH" }
 
-postgresql_users:
-  - name: "{{ privileged_user }}"
-    password: " {{ priv_user_db_password }})"
-    role_attr_flags: CREATEDB,CREATEROLE,LOGIN
-
-  - name: jenna
-    password: " {{ jenna_db_password }})"
-    role_attr_flags: CREATEDB,CREATEROLE,LOGIN
-
+users:
   - name: "{{ app_user }}"
-    password: "{{ app_user_db_password }})"
+    ssh_key:  "{{ lookup('file', 'files/jerry_id_rsa.pub') }}"
+    ugroups:
+      - sudo
+      - "{{ app_group }}"
+  - name: jenna
+    ssh_key:  "{{ lookup('file', 'files/jenna_id_rsa.pub') }}"
+    ugroups:
+      - sudo
+      - "{{ app_group }}"

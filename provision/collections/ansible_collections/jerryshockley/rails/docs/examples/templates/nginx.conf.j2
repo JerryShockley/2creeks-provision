@@ -10,7 +10,7 @@ http {
     passenger_root /opt/passenger-{{ passenger_version }};
     passenger_ruby /opt/ruby-{{ ruby_version }}/bin/ruby;
     passenger_instance_registry_dir /var/run/passenger-instreg;
-    passenger_app_env {{ app_env }};
+    passenger_app_env {{app_environment}};
 
     include       mime.types;
     default_type  application/octet-stream;

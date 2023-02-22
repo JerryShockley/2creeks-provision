@@ -9,7 +9,9 @@
   group:
     name: "{{ item }}"
     state: present
-  loop: "{{ ugroups }}"
+  loop:
+    - sudo
+    - "{{ app_group}}"
 
 - name: Create system users.
   user:

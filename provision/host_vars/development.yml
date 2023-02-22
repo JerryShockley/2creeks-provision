@@ -1,11 +1,9 @@
 ---
 app_user: vagrant
 app_group: vagrant
-node_env: development
-postgres_database: iicreeks_dev
-dev_db_password: hello
-app_environment:
-  RAILS_ENV: "{{ node_env }}"
+app_environment: development
+privileged_user:  "{{ vagrant }}"
+db_password: hello
 # These security settings differ between VirtualBox and Digital Ocean.
 # These changes for postgresql connections lets us connection
 # do the db via Vagrant forwarded port 5432 to the db inside
@@ -19,7 +17,7 @@ postgresql_hba_entries:
       address: '10.0.2.2/32', auth_method: trust }
 
 ufw_rules:
-  - to_port: "{{ ansible_port }}"
+  - to_port: "22"
     rule: allow
     proto: tcp
     comment: 'Allow SSH'
@@ -27,7 +25,7 @@ ufw_rules:
     rule: allow
     proto: tcp
     comment: 'Allow PostgreSQL'
-  - from_ip: '10.0.2.2/32'
+  - from_ip: '10.211.55.6/32'
     rule: allow
     comment: 'Connect via VirtualBox'
   - to_port: "{{ remote_port }}"
@@ -38,10 +36,10 @@ ufw_rules:
     proto: tcp
     rule: allow
     comment: 'Allow PostgreSQL'
-  - to_port: "{{ debug_port }}"
+  - to_port: "{{ remote_passenger_port }}"
     proto: tcp
     rule: allow
-    comment: 'Allow Node Inspect'
+    comment: 'Allow Passenger'
   - from_ip: "127.0.0.1/8"
     rule: allow
     comment: 'Allow localhost'
@@ -50,5 +48,5 @@ ufw_logging: full
 
 postgresql_users:
   - name: "{{ privileged_user }}"
-    password: "{{ dev_db_password }}"
+    password: "{{ db_password }}"
     role_attr_flags: CREATEDB,CREATEROLE,LOGIN

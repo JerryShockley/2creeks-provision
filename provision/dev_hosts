@@ -1,8 +1,8 @@
 ---
-
-hosts:
-  development:
-    ansible_host: 127.0.0.1:{{ host_port }}
-    ansible_user: vagrant
-    ansible_python_interpreter: /usr/bin/python3
-    ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
+all:
+  hosts:
+    development:
+      ansible_host: '10.211.55.6/32'
+      ansible_user: vagrant
+      ansible_python_interpreter: /usr/bin/python3
+      ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'

@@ -1,9 +1,0 @@
----
-
-- name: Create web root
-  file:
-    dest: "{{ app_root }}"
-    owner: "{{ app_user }}"
-    group: "{{ app_group }}"
-    mode: 0755
-    state: directory

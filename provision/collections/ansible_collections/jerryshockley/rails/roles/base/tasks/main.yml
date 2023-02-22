@@ -1,9 +1,0 @@
----
-
-- name: Common Packages
-  ansible.builtin.apt:
-    name:
-      - git
-      - vim
-      - sudo
-    state: present

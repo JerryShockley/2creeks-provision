@@ -30,7 +30,7 @@
 # on your guest OS inside VirtualBox. This enables you to edit
 # the program files local on the host OS and the changes are
 # automatically reflected in the guest OS.
-hfolder: '/Users/jerrys/src/iicreeks'
+hfolder: '/Users/jerrys/src/iicreeks/rails-app'
 # HTTP port number used on the host OS outside the guestOS.
 # In other words gport is forwarded to hport and you use
 # hport to connect from the host OS.
@@ -38,5 +38,5 @@ hport: '8090'
 # DB port number used on the host OS outside the guestOS.
 # Ensure this port number is available.
 dbhport: '5436'
-# Nodejs debug port on the host OS outside the guestOS.
-debugport: '9229'
+
+passengerhport: '3000' 

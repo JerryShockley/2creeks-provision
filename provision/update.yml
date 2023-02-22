@@ -4,4 +4,3 @@
   roles:
     - deploy_user
     - logrotate
-    - nginx

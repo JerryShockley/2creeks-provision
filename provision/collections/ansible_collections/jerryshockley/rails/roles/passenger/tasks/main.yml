@@ -1,5 +1,0 @@
----
-
-- name: Add Passenger Module
-  import_tasks: install.yml
-  when: install is defined and install|bool

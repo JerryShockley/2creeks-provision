@@ -1,8 +1,0 @@
----
-
-- name: Setup Deploy User
-  import_tasks: setup.yml
-  when: (setup is defined and setup|bool) and app_user != "vagrant"
-
-- name: Configure Deploy User
-  import_tasks: configure.yml

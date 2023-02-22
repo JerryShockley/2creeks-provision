@@ -9,17 +9,11 @@
   tasks:
     - name: Update Package Cache
       ansible.builtin.apt:
+        name: aptitude
+        state: present
+        force_apt_get: true
         update_cache: true
         cache_valid_time: 3600
-
-    - name: Upgrade the OS (apt-get dist-upgrade)
-      ansible.builtin.apt:
-        upgrade: dist
-
-    - name: Upgrade All Packages
-      ansible.builtin.apt:
-        name: "*"
-        state: latest
 
     - name: Common Packages
       ansible.builtin.apt:
@@ -27,14 +21,34 @@
           - git
           - neovim
           - sudo
-        state: present
-        
-
-    - name: Installing Redis Server
-      ansible.builtin.apt:
-        name:
           - redis-server
+          - python-dev
+          - python3-pip
+          - libpq-dev  # Provides pg_config used by postgresql role
         state: present
+
+    - name: Upgrade All Packages
+      ansible.builtin.apt:
+        upgrade: "safe"
+
+    - name: Create Ansible tmp directory
+      ansible.builtin.file:
+        path: /root/.ansible/tmp
+        state: "directory"
+        mode: '0777'
+
+    - name: Check if reboot is required
+      ansible.builtin.stat:
+        path: /var/run/reboot-required
+      register: reboot_file
+
+    - name: Reboot if required
+      ansible.builtin.reboot:
+      when: reboot_file.stat.exists
+
+    - name: Remount shared files if using vagrant
+      ansible.builtin.command: mount -a
+      when: ansible_user
 
     - name: Adding System users
       ansible.builtin.include_tasks:
@@ -48,25 +62,54 @@
 
     - ansible.builtin.include_role:
         name: logrotate
+
+    - name: Create ansible tmp directory with shared permissions
+      ansible.builtin.file:
+        path: /home/{{ app_user }}/.ansible/tmp
+        state: "directory"
+        mode: '0777'
+
     - ansible.builtin.include_role:
-        name: ruby
+        name: cimon-io.asdf
+      vars:
+        asdf_user: "{{ app_user }}"
+        asdf_group: "{{ app_group }}"
+        asdf_plugins:
+          - name: ruby
+            versions:
+              - "{{ ruby_version }}"
+            global: "{{ ruby_version }}"
+
     - ansible.builtin.include_role:
-        name: nginxinc.nginx
+        name: geerlingguy.passenger
+      vars:
+         passenger_server_name: localhost
+         passenger_app_root: "{{ app_path }}/public"
+         passenger_app_env: "{{app_environment}}"
+         passenger_root: "/usr/lib/vendor_ruby/phusion_passenger/locations.ini"
+         passenger_ruby: "{{ ruby_root_dir }}/bin/ruby"
+    
     - ansible.builtin.include_role:
         name: nodejs
+    
     - ansible.builtin.include_role:
         name: geerlingguy.postgresql
+      vars:
+        postgres_users_no_log: false
+        postgresql_python_library: psycopg2
+
+    - ansible.builtin.include_role:
+        name: geerlingguy.pip
+      vars:
+        pip_install_packages:
+          - name: pyscopg2
+            state: latest
+
     - ansible.builtin.include_role:
         name: weareinteractive.ufw
+    
     - ansible.builtin.include_role:
         name: hifis.unattended_upgrades
-
-    - name: Install Postgresql Gem
-      gem:
-        name: pg
-        executable: "/opt/ruby-{{ ruby_version }}/bin/gem"
-        user_install: no
-      when: postgres is defined and postgres|bool
 
     - name: Ensure Rails app folder exists.
       ansible.builtin.file:

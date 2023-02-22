@@ -1,3 +1,6 @@
 ---
 - src: weareinteractive.ufw
 - src: amritsingh.sidekiq-systemd
+- src: geerlingguy.passenger
+- src: cimon-io.asdf
+- src: geerlingguy.pip

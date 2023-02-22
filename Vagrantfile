@@ -2,6 +2,7 @@
 # vi: set ft=ruby :
 
 require 'yaml'
+
 # Get developers username.
 user = ENV['USER']
 # Opens developer specific vagrant config file containing options
@@ -12,15 +13,17 @@ vars = YAML.load_file "./vagrant.config/vagrant.#{user}.yml"
 guest_sync_dir = '/opt/www/iicreeks'
 guest_port = '8090'
 guest_db_port = '5432'
+guest_passenger_port = '3000'
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "gvengel/salt-jammy-arm64"
+  config.vm.box = "mpasternak/focal64-arm"
+  config.vm.define "development"
   config.vm.network "forwarded_port", guest: guest_port,
     host: vars['hport'], auto_correct: true
   config.vm.network "forwarded_port", guest: guest_db_port,
     host: vars['dbhport'], auto_correct: true
-  config.vm.network "forwarded_port", guest: "9229",
-    host: vars['debugport'], auto_correct: true
+  config.vm.network "forwarded_port", guest: guest_passenger_port,
+    host: vars['passengerhport'], auto_correct: true
   config.ssh.insert_key = false
   config.vm.synced_folder vars['hfolder'], guest_sync_dir, create: true
 
@@ -48,13 +51,11 @@ Vagrant.configure("2") do |config|
       vagrant_ssh_keyfile: "~/.vagrant.d/insecure_private_key",
       host_db_port: vars['dbhport'],
       host_port: vars['hport'],
+      host_passenger_port: vars['passengerhport'],
       remote_port: guest_port,
       remote_db_port:  guest_db_port,
-      debug_port: "9229",
-      app_directory: guest_sync_dir,
-      privileged_user: "vagrant",
-      app_user: "vagrant",
-      node_env: "development"
+      remote_passenger_port: guest_passenger_port,
+      app_directory: guest_sync_dir
     }
     # Enables passing of args to Ansible from Vagrant CLI
     # via the ANSIBLE_ARGS environment variable

@@ -1,24 +1,7 @@
 ---
 ### App Settings
 app_path: "/opt/www/iicreeks"
-app_user: jerry
 passwordless_sudo: true
-app_usr_group: iicreeks
-users:
-  - name: "{{ app_user }}"
-    ssh_key:  "{{ lookup('file', 'files/jerry_id_rsa.pub') }}"
-    ugroups:
-      - sudo
-      - "{{ app_usr_group }}"
-  - name: jenna
-    ssh_key:  "{{ lookup('file', 'files/jenna_id_rsa.pub') }}"
-    ugroups:
-      - sudo
-      - "{{ app_usr_group }}"
-  - name: "{{ app_user }}"
-    ugroup: "{{ app_usr_group }}"
-ugroups:
-  - "{{ app_usr_group }}"
 
 ### Nginx configuration settings
 # nginx_version: 1.22.1
@@ -28,13 +11,14 @@ nginx_extra_modules:
   - passenger
 
 ruby_version: 3.2.0
+python_version: 3.11.2
+ruby_root_dir: /home/{{ app_user }}/.asdf/ruby/{{ ruby_version}}
 bundler: yes
 bundler_version: 2.4.3
 node_version: 18.12.1
 postgres: yes
 
 ### PostgreSQL configuration settings
-postgresql_python_library: python3-psycopg2
 # __postgresql_version: 15
 # postgresql_packages:
 #   - postgresql-{{ postgresql_major_version}}
