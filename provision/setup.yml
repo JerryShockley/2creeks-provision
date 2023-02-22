@@ -63,12 +63,6 @@
     - ansible.builtin.include_role:
         name: logrotate
 
-    - name: Create ansible tmp directory with shared permissions
-      ansible.builtin.file:
-        path: /home/{{ app_user }}/.ansible/tmp
-        state: "directory"
-        mode: '0777'
-
     - ansible.builtin.include_role:
         name: cimon-io.asdf
       vars:
