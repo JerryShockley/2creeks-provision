@@ -7,6 +7,22 @@
     setup: yes
 
   tasks:
+    - name: Set permanent rails environment variable #Gets read at login and logout
+      ansible.builtin.lineinfile:
+        dest: "/home/{{ app_user }}/.bashrc"
+        state: present
+        regexp: "^RAILS_ENV="
+        line: "RAILS_ENV={{ app_environment }}"
+
+    - name: Configure .bashrc (RAILS_ENV) to be read for non-login shells
+      ansible.builtin.lineinfile:
+        dest: "/home/{{ app_user }}/.bash_profile"
+        state: present
+        owner: "{{ app_user }}"
+        create: true
+        search_string:  ". ~/.bashrc"
+        line: ". ~/.bashrc"
+
     - name: Update Package Cache
       ansible.builtin.apt:
         name: aptitude
@@ -109,3 +125,5 @@
       ansible.builtin.file:
         path: "{{ app_path }}"
         state: directory 
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
