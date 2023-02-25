@@ -2,7 +2,7 @@
 app_user: vagrant
 app_group: vagrant
 app_environment: development
-privileged_user:  "{{ vagrant }}"
+privileged_user:  "{{ app_user }}"
 db_password: hello
 # These security settings differ between VirtualBox and Digital Ocean.
 # These changes for postgresql connections lets us connection
