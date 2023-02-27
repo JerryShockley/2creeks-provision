@@ -38,7 +38,7 @@
           - neovim
           - sudo
           - redis-server
-          - python-dev
+          - python3-dev
           - python3-pip
           - libpq-dev  # Provides pg_config used by postgresql role
         state: present
@@ -64,7 +64,7 @@
 
     - name: Remount shared files if using vagrant
       ansible.builtin.command: mount -a
-      when: ansible_user
+      when: ansible_user == 'vagrant'
 
     - name: Adding System users
       ansible.builtin.include_tasks:
@@ -91,6 +91,15 @@
             global: "{{ ruby_version }}"
 
     - ansible.builtin.include_role:
+        name: geerlingguy.pip
+      vars:
+        pip_install_packages:
+          - name: wheel
+            state: latest
+          - name: pyscopg2
+            state: latest
+
+    - ansible.builtin.include_role:
         name: geerlingguy.passenger
       vars:
          passenger_server_name: localhost
@@ -107,13 +116,6 @@
       vars:
         postgres_users_no_log: false
         postgresql_python_library: psycopg2
-
-    - ansible.builtin.include_role:
-        name: geerlingguy.pip
-      vars:
-        pip_install_packages:
-          - name: pyscopg2
-            state: latest
 
     - ansible.builtin.include_role:
         name: weareinteractive.ufw
