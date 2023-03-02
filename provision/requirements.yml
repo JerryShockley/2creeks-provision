@@ -1,6 +1,8 @@
 ---
-- src: weareinteractive.ufw
-- src: amritsingh.sidekiq-systemd
-- src: geerlingguy.passenger
-- src: cimon-io.asdf
-- src: geerlingguy.pip
+roles:
+  - src: weareinteractive.ufw
+  - src: amritsingh.sidekiq-systemd
+  - src: geerlingguy.passenger
+  - src: cimon-io.asdf
+  - src: geerlingguy.pip
+  - src: geerlingguy.certbot

@@ -75,6 +75,19 @@
       ansible.builtin.include_tasks:
         file: tasks/secure_server.yml
       when: ansible_user != "vagrant"
+      
+    - ansible.builtin.include_role:
+        name: geerlingguy.certbot
+      vars:
+        certbot_auto_renew_user: "{{ privileged_user }}"
+        certbot_auto_renew: true
+        certbot_auto_renew_hour: "4"
+        certbot_auto_renew_minute: "13"
+        certbot_auto_renew_options: "--quiet --no-self-upgrade"
+        certbot_create_if_missing: true
+        certbot_create_mthod: webroot
+        certbot_admin_email: "{{ admin_email }}"
+
 
     - ansible.builtin.include_role:
         name: logrotate

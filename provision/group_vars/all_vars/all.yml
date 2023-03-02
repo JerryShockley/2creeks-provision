@@ -2,14 +2,13 @@
 ### App Settings
 app_path: "/opt/www/iicreeks"
 passwordless_sudo: true
-
+admin_email: "{{ vault_admin_email }}"
 ### Nginx configuration settings
 # nginx_version: 1.22.1
 # nginx_install_from: open_source
 nginx_config_template: nginx.conf.j2
 nginx_extra_modules:
   - passenger
-
 ruby_version: 3.2.0
 python_version: 3.11.2
 ruby_root_dir: /home/{{ app_user }}/.asdf/ruby/{{ ruby_version}}
