@@ -3,6 +3,7 @@ app_user: jerry
 privileged_user: "{{ app_user }}"
 app_group: deploy
 app_environment: production
+db_name: iicreeks_production
 # All user groups assigned to any system user.
 ugroups:
   - sudo

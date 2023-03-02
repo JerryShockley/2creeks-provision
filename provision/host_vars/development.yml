@@ -3,8 +3,9 @@ app_user: vagrant
 app_group: vagrant
 app_environment: development
 privileged_user:  "{{ app_user }}"
+db_name: iicreeks_development
 
-# These security settings differ between VirtualBox and Digital Ocean.
+#security settings differ between VirtualBox and Digital Ocean.
 # These changes for postgresql connections lets us connection
 # do the db via Vagrant forwarded port 5432 to the db inside
 # the virtual machine.
