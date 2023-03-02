@@ -1,0 +1,2 @@
+ 1. Have ansible add postgres users and databases 
+ 2. Have ansible create the Rails database.rb file using a template.
