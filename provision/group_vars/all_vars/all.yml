@@ -2,6 +2,7 @@
 ### App Settings
 app_path: "/opt/www/iicreeks"
 passwordless_sudo: true
+domain_name: 2creekscamas.com
 admin_email: "{{ vault_admin_email }}"
 ### Nginx configuration settings
 # nginx_version: 1.22.1
