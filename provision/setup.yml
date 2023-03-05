@@ -2,9 +2,9 @@
   become: true
   collections:
     - jerryshockley.rails
-  vars:
-    install: yes
-    setup: yes
+  vars_files:
+    - group_vars/all_vars/all.yml
+    - group_vars/all_vars/vault.yml
 
   tasks:
     - name: Set permanent rails environment variable #Gets read at login and logout
