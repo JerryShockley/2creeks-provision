@@ -4,12 +4,6 @@ app_path: "/opt/www/iicreeks"
 passwordless_sudo: true
 domain_name: 2creekscamas.com
 admin_email: "{{ vault_admin_email }}"
-### Nginx configuration settings
-# nginx_version: 1.22.1
-# nginx_install_from: open_source
-nginx_config_template: nginx.conf.j2
-nginx_extra_modules:
-  - passenger
 ruby_version: 3.2.0
 python_version: 3.11.2
 ruby_root_dir: /home/{{ app_user }}/.asdf/ruby/{{ ruby_version}}
@@ -18,12 +12,6 @@ bundler_version: 2.4.3
 node_version: 18.12.1
 postgres: yes
 
-### PostgreSQL configuration settings
-# __postgresql_version: 15
-# postgresql_packages:
-#   - postgresql-{{ postgresql_major_version}}
-#   - postgresql-client-{{ postgresql_major_version}}
-#   - libpq-dev
 passenger_version: 6.0.16
 
 ### Sidekiq configuration settings
