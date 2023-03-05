@@ -34,9 +34,7 @@ hfolder: '/Users/jerrys/src/iicreeks/rails-app'
 # HTTP port number used on the host OS outside the guestOS.
 # In other words gport is forwarded to hport and you use
 # hport to connect from the host OS.
-hport: '8090'
+hport: '3000'
 # DB port number used on the host OS outside the guestOS.
 # Ensure this port number is available.
 dbhport: '5436'
-
-passengerhport: '3000' 
