@@ -1,0 +1,42 @@
+---
+- name: Install aptitude and update Package Cache
+  ansible.builtin.apt:
+    name: aptitude
+    state: present
+    force_apt_get: true
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Remove lock file left from previous apt call
+  ansible.builtin.file:
+    path: /var/lib/dpkg/lock
+    state: absent
+
+- name: Common Packages
+  ansible.builtin.apt:
+    name:
+      - git
+      - neovim
+      - sudo
+      - redis-server
+      - python3.9
+      - python3-pip
+      - libpq-dev  # Provides pg_config used by postgresql role
+    state: present
+
+- name: Upgrade All Packages
+  ansible.builtin.apt:
+    upgrade: "safe"
+
+- name: Check if reboot is required
+  ansible.builtin.stat:
+    path: /var/run/reboot-required
+  register: reboot_file
+
+- name: Reboot if required
+  ansible.builtin.reboot:
+  when: reboot_file.stat.exists
+
+- name: Remount shared files if using vagrant
+  ansible.builtin.command: mount -a
+  when: ansible_user == 'vagrant'
