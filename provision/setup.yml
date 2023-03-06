@@ -7,6 +7,31 @@
     - group_vars/all_vars/vault.yml
 
   tasks:
+    - ansible.builtin.include_tasks:
+        file: tasks/install_and_update_packages.yml 
+    
+    - name: Adding System users
+      ansible.builtin.include_tasks:
+        file: tasks/add_users.yml
+      when: ansible_user != "vagrant"
+
+    - name: Securing Server
+      ansible.builtin.include_tasks:
+        file: tasks/secure_server.yml
+      when: ansible_user != "vagrant"
+    
+    - name: Create bash user config files
+      ansible.builtin.file:
+        path: "/home/{{ privileged_user }}/{{ item }}"
+        state: touch
+        owner:  "{{ privileged_user }}"
+        group:   "{{ privileged_user }}"
+        mode: "0770"
+      loop:
+        - .bashrc
+        - .bash_profile
+      when: ansible_user != "vagrant"
+
     - name: Set permanent rails environment variable #Gets read at login and logout
       ansible.builtin.lineinfile:
         dest: "/home/{{ app_user }}/.bashrc"
@@ -23,71 +48,19 @@
         search_string:  ". ~/.bashrc"
         line: ". ~/.bashrc"
 
-    - name: Update Package Cache
-      ansible.builtin.apt:
-        name: aptitude
-        state: present
-        force_apt_get: true
-        update_cache: true
-        cache_valid_time: 3600
-
-    - name: Common Packages
-      ansible.builtin.apt:
-        name:
-          - git
-          - neovim
-          - sudo
-          - redis-server
-          - python3-dev
-          - python3-pip
-          - libpq-dev  # Provides pg_config used by postgresql role
-        state: present
-
-    - name: Upgrade All Packages
-      ansible.builtin.apt:
-        upgrade: "safe"
-
-    - name: Create Ansible tmp directory
+    - name: Ensure Rails app folder exists.
       ansible.builtin.file:
-        path: /root/.ansible/tmp
-        state: "directory"
-        mode: '0777'
+        path: "{{ app_path }}"
+        state: directory 
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
 
-    - name: Check if reboot is required
-      ansible.builtin.stat:
-        path: /var/run/reboot-required
-      register: reboot_file
-
-    - name: Reboot if required
-      ansible.builtin.reboot:
-      when: reboot_file.stat.exists
-
-    - name: Remount shared files if using vagrant
-      ansible.builtin.command: mount -a
-      when: ansible_user == 'vagrant'
-
-    - name: Adding System users
-      ansible.builtin.include_tasks:
-        file: tasks/add_users.yml
-      when: ansible_user != "vagrant"
-
-    - name: Securing Server
-      ansible.builtin.include_tasks:
-        file: tasks/secure_server.yml
-      when: ansible_user != "vagrant"
-      
-    - ansible.builtin.include_role:
-        name: geerlingguy.certbot
-      vars:
-        certbot_auto_renew_user: "{{ privileged_user }}"
-        certbot_auto_renew: true
-        certbot_auto_renew_hour: "4"
-        certbot_auto_renew_minute: "13"
-        certbot_auto_renew_options: "--quiet --no-self-upgrade"
-        certbot_create_if_missing: true
-        certbot_create_mthod: webroot
-        certbot_admin_email: "{{ admin_email }}"
-
+    - name: Ensure Rails public folder exists for certbot.
+      ansible.builtin.file:
+        path: "{{ app_path }}/public"
+        state: directory 
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
 
     - ansible.builtin.include_role:
         name: logrotate
@@ -102,15 +75,17 @@
             versions:
               - "{{ ruby_version }}"
             global: "{{ ruby_version }}"
+          - name: nodejs
+            versions:
+              - "{{ node_version }}"
+            global: "{{ node_version }}"
 
-    - ansible.builtin.include_role:
-        name: geerlingguy.pip
-      vars:
-        pip_install_packages:
-          - name: wheel
-            state: latest
-          - name: pyscopg2
-            state: latest
+    - name: Install Ruby gems
+      ansible.builtin.shell: bash -lc "gem install {{ item }}"
+      loop:
+        - bundler
+        - rake
+        - rails -v '~> 7.0.4' 
 
     - ansible.builtin.include_role:
         name: geerlingguy.passenger
@@ -120,9 +95,18 @@
          passenger_app_env: "{{app_environment}}"
          passenger_root: "/usr/lib/vendor_ruby/phusion_passenger/locations.ini"
          passenger_ruby: "{{ ruby_root_dir }}/bin/ruby"
-    
+
     - ansible.builtin.include_role:
-        name: nodejs
+        name: coopdevs.certbot_nginx
+      vars:
+        domain_name: 2creekscamas.org
+        letsencrypt_email: "{{ admin_email }}"
+      when: ansible_user != "vagrant"
+    
+    - name: Make sure psycopg2 is installed
+      pip:
+        name: psycopg2
+        state: present
     
     - ansible.builtin.include_role:
         name: geerlingguy.postgresql
@@ -135,10 +119,3 @@
     
     - ansible.builtin.include_role:
         name: hifis.unattended_upgrades
-
-    - name: Ensure Rails app folder exists.
-      ansible.builtin.file:
-        path: "{{ app_path }}"
-        state: directory 
-        owner: "{{ app_user }}"
-        group: "{{ app_group }}"
