@@ -11,9 +11,8 @@ vars = YAML.load_file "./vagrant.config/vagrant.#{user}.yml"
 
 # Reused vars for DRY.
 guest_sync_dir = '/opt/www/iicreeks'
-guest_port = '8090'
+guest_port = '3000'
 guest_db_port = '5432'
-guest_passenger_port = '3000'
 
 Vagrant.configure("2") do |config|
   config.vm.box = "mpasternak/focal64-arm"
@@ -22,8 +21,6 @@ Vagrant.configure("2") do |config|
     host: vars['hport'], auto_correct: true
   config.vm.network "forwarded_port", guest: guest_db_port,
     host: vars['dbhport'], auto_correct: true
-  config.vm.network "forwarded_port", guest: guest_passenger_port,
-    host: vars['passengerhport'], auto_correct: true
   config.ssh.insert_key = false
   config.vm.synced_folder vars['hfolder'], guest_sync_dir, create: true
 
@@ -39,7 +36,6 @@ Vagrant.configure("2") do |config|
     ansible.compatibility_mode="2.0"
     ansible.playbook = 'provision/setup.yml'
     ansible.host_vars = {
-      "ansible_python_interpreter" => "/usr/bin/python3",
       "ansible_ssh_extra_args" => "-o StrictHostKeyChecking=no"
    }
     ansible.limit = "all"
@@ -51,10 +47,8 @@ Vagrant.configure("2") do |config|
       vagrant_ssh_keyfile: "~/.vagrant.d/insecure_private_key",
       host_db_port: vars['dbhport'],
       host_port: vars['hport'],
-      host_passenger_port: vars['passengerhport'],
       remote_port: guest_port,
       remote_db_port:  guest_db_port,
-      remote_passenger_port: guest_passenger_port,
       app_directory: guest_sync_dir
     }
     # Enables passing of args to Ansible from Vagrant CLI
