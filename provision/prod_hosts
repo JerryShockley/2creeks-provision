@@ -2,6 +2,6 @@
 all:
     hosts:
         production:
-            ansible_host: 143.198.233.13 
-            ansible_python_interpreter: /usr/bin/python3
+            ansible_host: 2creekscamas.org
+            # ansible_python_interpreter: /Users/jerrys/.asdf/installs/python/3.11.2/bin/python
             ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
