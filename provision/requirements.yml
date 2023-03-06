@@ -5,4 +5,4 @@ roles:
   - src: geerlingguy.passenger
   - src: cimon-io.asdf
   - src: geerlingguy.pip
-  - src: geerlingguy.certbot
+  - src: coopdevs.certbot_nginx,v0.3.1
