@@ -37,4 +37,4 @@ hfolder: '/Users/jerrys/src/iicreeks/rails-app'
 hport: '3000'
 # DB port number used on the host OS outside the guestOS.
 # Ensure this port number is available.
-dbhport: '5436'
+dbhport: '5432'
