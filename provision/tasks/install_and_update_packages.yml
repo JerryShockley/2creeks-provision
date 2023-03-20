@@ -1,27 +1,12 @@
 ---
-- name: Install aptitude and update Package Cache
+- name: Update apt cache
   ansible.builtin.apt:
-    name: aptitude
-    state: present
-    force_apt_get: true
     update_cache: true
     cache_valid_time: 3600
 
-- name: Remove lock file left from previous apt call
-  ansible.builtin.file:
-    path: /var/lib/dpkg/lock
-    state: absent
-
 - name: Common Packages
   ansible.builtin.apt:
-    name:
-      - git
-      - neovim
-      - sudo
-      - redis-server
-      - python3.9
-      - python3-pip
-      - libpq-dev  # Provides pg_config used by postgresql role
+    name: "{{ package_list }}"
     state: present
 
 - name: Upgrade All Packages
