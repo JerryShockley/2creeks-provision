@@ -12,7 +12,7 @@ auto-save-list
 tramp
 .\#*
 
-# Make spotlight files
+# Mac spotlight files
 .DS_Store
 
 # Org-mode
