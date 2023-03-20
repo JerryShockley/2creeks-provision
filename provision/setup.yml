@@ -9,6 +9,16 @@
   tasks:
     - ansible.builtin.include_tasks:
         file: tasks/install_and_update_packages.yml 
+      vars:
+        package_list:
+          - aptitude
+          - git
+          - neovim
+          - sudo
+          - redis-server
+          - python3.9
+          - python3-pip
+          - libpq-dev  # Provides pg_config used by postgresql role
     
     - name: Adding System users
       ansible.builtin.include_tasks:
