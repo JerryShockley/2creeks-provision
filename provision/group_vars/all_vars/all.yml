@@ -9,7 +9,7 @@ python_version: 3.11.2
 ruby_root_dir: /home/{{ app_user }}/.asdf/ruby/{{ ruby_version}}
 bundler: yes
 bundler_version: 2.4.3
-node_version: 18.12.1
+node_version: 18.14.2
 postgres: yes
 
 passenger_version: 6.0.16
