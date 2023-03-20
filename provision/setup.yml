@@ -42,12 +42,16 @@
         - .bash_profile
       when: ansible_user != "vagrant"
 
-    - name: Set permanent rails environment variable #Gets read at login and logout
+    - name: Set permanent environment variable #Gets read at login and logout
       ansible.builtin.lineinfile:
         dest: "/home/{{ app_user }}/.bashrc"
         state: present
-        regexp: "^RAILS_ENV="
-        line: "RAILS_ENV={{ app_environment }}"
+        regexp: "^{{ item.env_name}}="
+        line: "{{ item.env_name}}={{ item.env_value }}"
+      loop:
+        - { env_name: 'RAILS_ENV', env_value: "{{ app_environment }}" }
+         # requiired by webpack
+        - { env_name: 'NODE_OPTIONS', env_value: '--openssl-legacy-provider' }
 
     - name: Configure .bashrc (RAILS_ENV) to be read for non-login shells
       ansible.builtin.lineinfile:
@@ -89,6 +93,11 @@
             versions:
               - "{{ node_version }}"
             global: "{{ node_version }}"
+    
+    # - name: Install global node packages
+    #   ansible.builtin.shell: bash -lc "npm install {{ item }}"
+    #   loop:
+    #     - bundler
 
     - name: Install Ruby gems
       ansible.builtin.shell: bash -lc "gem install {{ item }}"
@@ -96,6 +105,8 @@
         - bundler
         - rake
         - rails -v '~> 7.0.4' 
+      become: true
+      become_user: "{{ app_user }}"
 
     - ansible.builtin.include_role:
         name: geerlingguy.passenger
