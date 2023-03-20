@@ -22,10 +22,6 @@ postgresql_users:
     password: 'hello'
     role_attr_flags: SUPERUSER
 
-postgresql_databases:
-- name: iicreeks_development
-  owner: "{{ privileged_user }}"
-
 ufw_rules:
   - to_port: "22"
     rule: allow
