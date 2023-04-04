@@ -19,6 +19,10 @@
           - python3.9
           - python3-pip
           - libpq-dev  # Provides pg_config used by postgresql role
+          - libcurl4
+          - libcurl4-openssl-dev # For Passenger build
+          - libpcre3
+          - libpcre3-dev 
     
     - name: Adding System users
       ansible.builtin.include_tasks:
@@ -61,6 +65,12 @@
         create: true
         search_string:  ". ~/.bashrc"
         line: ". ~/.bashrc"
+
+    - name: Add aliases to .bashrc
+      ansible.builtin.lineinfile:
+        path: /home/{{ app_user }}/.bashrc
+        state: present
+        line: alias hh="cd /opt/www/iicreeks"
 
     - name: Ensure Rails app folder exists.
       ansible.builtin.file:
@@ -116,6 +126,7 @@
          passenger_app_env: "{{app_environment}}"
          passenger_root: "/usr/lib/vendor_ruby/phusion_passenger/locations.ini"
          passenger_ruby: "{{ ruby_root_dir }}/bin/ruby"
+      # when: ansible_user != "vagrant"
 
     - ansible.builtin.include_role:
         name: coopdevs.certbot_nginx

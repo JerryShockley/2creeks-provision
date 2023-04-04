@@ -17,6 +17,7 @@ guest_db_port = '5432'
 Vagrant.configure("2") do |config|
   config.vm.box = "mpasternak/focal64-arm"
   config.vm.define "development"
+  config.vm.network "private_network", ip: "192.168.78.33"
   config.vm.network "forwarded_port", guest: guest_port,
     host: vars['hport'], auto_correct: true
   config.vm.network "forwarded_port", guest: guest_db_port,
@@ -26,8 +27,8 @@ Vagrant.configure("2") do |config|
 
   config.vm.provider "parallels" do |prl|
     prl.name = "iicreeksApp-vm"
-    prl.memory = 1024
-    prl.cpus = 1
+    prl.memory = 2048
+    prl.cpus = 2
     prl.update_guest_tools = true
   end
 

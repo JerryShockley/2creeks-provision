@@ -2,6 +2,6 @@
 all:
   hosts:
     development:
-      ansible_host: '10.211.55.6/32'
+      ansible_host: '10.211.55.6'
       ansible_user: vagrant
       ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
