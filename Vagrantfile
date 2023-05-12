@@ -13,6 +13,8 @@ vars = YAML.load_file "./vagrant.config/vagrant.#{user}.yml"
 guest_sync_dir = '/opt/www/iicreeks'
 guest_app_port = '3000'
 guest_db_port = '5432'
+guest_vite_dev_port = '3036'
+guest_vite_test_port = '3037'
 
 Vagrant.configure("2") do |config|
   config.vm.box = "mpasternak/focal64-arm"
