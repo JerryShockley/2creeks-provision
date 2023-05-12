@@ -70,7 +70,10 @@
       ansible.builtin.lineinfile:
         path: /home/{{ app_user }}/.bashrc
         state: present
-        line: alias hh="cd /opt/www/iicreeks"
+        line: "{{ item }}"
+      loop:
+        - alias hh="cd /opt/www/iicreeks"
+        - alias listen="sudo lsof  -Pi4TCP -sTCP:LISTEN"
 
     - name: Ensure Rails app folder exists.
       ansible.builtin.file:
