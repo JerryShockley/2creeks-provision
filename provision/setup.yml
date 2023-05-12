@@ -106,7 +106,7 @@
             versions:
               - "{{ node_version }}"
             global: "{{ node_version }}"
-    
+
     - name: Update/Install npm & yarn package managers
       ansible.builtin.shell: /usr/bin/bash -lc "npm install -g {{ item }}"
       loop:
@@ -132,7 +132,6 @@
     - name: Install global Ruby gems
       ansible.builtin.shell: /usr/bin/bash -lc "gem install {{ item }}"
       loop:
-        - bundler
         - rake
         - rails -v '~> 7.0.4' 
       become: true
