@@ -11,7 +11,7 @@ vars = YAML.load_file "./vagrant.config/vagrant.#{user}.yml"
 
 # Reused vars for DRY.
 guest_sync_dir = '/opt/www/iicreeks'
-guest_port = '3000'
+guest_app_port = '3000'
 guest_db_port = '5432'
 
 Vagrant.configure("2") do |config|
