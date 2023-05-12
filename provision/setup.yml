@@ -16,7 +16,7 @@
           - neovim
           - sudo
           - redis-server
-          - python3.9
+          - python3.11
           - python3-pip
           - libpq-dev  # Provides pg_config used by postgresql role
           - libcurl4
