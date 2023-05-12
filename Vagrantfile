@@ -57,12 +57,9 @@ Vagrant.configure('2') do |config|
       'ansible_ssh_extra_args' => '-o StrictHostKeyChecking=no'
    }
     ansible.limit = 'all'
-    # ansible.galaxy_role_file = "ansible/requirements.yml"
-    # ansible.galaxy_command = "sudo ansible-galaxy install --role-file=%{role_file} /
-    # --roles-path=%{roles_path} --force"
     ansible.become = true
     ansible.extra_vars = {
-      vagrant_ssh_keyfile: "~/.vagrant.d/insecure_private_key",
+      vagrant_ssh_keyfile: '~/.vagrant.d/insecure_private_key',
       host_db_port: vars['dbhport'],
       host_port: vars['hport'],
       remote_port: guest_port,
@@ -71,8 +68,8 @@ Vagrant.configure('2') do |config|
     }
     # Enables passing of args to Ansible from Vagrant CLI
     # via the ANSIBLE_ARGS environment variable
-    if ENV["ANSIBLE_ARGS"]
-      ansible.raw_arguments = Shellwords.shellsplit(ENV["ANSIBLE_ARGS"])
+    if ENV['ANSIBLE_ARGS']
+      ansible.raw_arguments = Shellwords.shellsplit(ENV['ANSIBLE_ARGS'])
     end
   end
 end
