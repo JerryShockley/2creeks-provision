@@ -62,7 +62,7 @@ Vagrant.configure('2') do |config|
       vagrant_ssh_keyfile: '~/.vagrant.d/insecure_private_key',
       host_db_port: vars['dbhport'],
       host_port: vars['hport'],
-      remote_port: guest_port,
+      remote_port: guest_app_port,
       remote_db_port:  guest_db_port,
       app_directory: guest_sync_dir
     }
