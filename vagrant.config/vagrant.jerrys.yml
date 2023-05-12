@@ -38,3 +38,7 @@ app_hport: '3000'
 # DB port number used on the host OS outside the guestOS.
 # Ensure this port number is available.
 db_hport: '5432'
+# Vite dev server port
+vite_dev_hport: '3036'
+# Vite test server port
+vite_test_hport: '3037'
