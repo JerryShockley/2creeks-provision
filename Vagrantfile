@@ -38,10 +38,12 @@ Vagrant.configure('2') do |config|
                     auto_correct: true
 
   config.ssh.insert_key = false
-  config.vm.synced_folder vars['hfolder'], guest_sync_dir, create: true
+  config.vm.synced_folder vars['hfolder'], 
+                          guest_sync_dir,
+                          create: true
 
-  config.vm.provider "parallels" do |prl|
-    prl.name = "iicreeksApp-vm"
+  config.vm.provider 'parallels' do |prl|
+    prl.name = 'iicreeksApp-vm'
     prl.memory = 2048
     prl.cpus = 2
     prl.update_guest_tools = true
