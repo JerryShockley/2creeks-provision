@@ -5,11 +5,8 @@ passwordless_sudo: true
 domain_name: 2creekscamas.com
 admin_email: "{{ vault_admin_email }}"
 ruby_version: 3.2.2
-python_version: 3.11.2
 ruby_root_dir: /home/{{ app_user }}/.asdf/ruby/{{ ruby_version}}
-bundler: yes
-bundler_version: 2.4.3
-node_version: 18.14.2
+node_version: 19.8.1
 postgres: yes
 
 passenger_version: 6.0.16
