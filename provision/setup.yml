@@ -54,7 +54,7 @@
         line: "{{ item.env_name}}={{ item.env_value }}"
       loop:
         - { env_name: 'RAILS_ENV', env_value: "{{ app_environment }}" }
-         # requiired by webpack
+         # required by webpack
         - { env_name: 'NODE_OPTIONS', env_value: '--openssl-legacy-provider' }
 
     - name: Configure .bashrc (RAILS_ENV) to be read for non-login shells
