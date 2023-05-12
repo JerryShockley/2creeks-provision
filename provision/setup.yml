@@ -129,8 +129,8 @@
       become: true
       become_user: "{{ app_user }}"
 
-    - name: Install Ruby gems
-      ansible.builtin.shell: bash -lc "gem install {{ item }}"
+    - name: Install global Ruby gems
+      ansible.builtin.shell: /usr/bin/bash -lc "gem install {{ item }}"
       loop:
         - bundler
         - rake
