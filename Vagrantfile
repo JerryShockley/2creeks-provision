@@ -50,13 +50,13 @@ Vagrant.configure('2') do |config|
   end
 
   # Ansible provisioner.
-  config.vm.provision "ansible" do |ansible|
-    ansible.compatibility_mode="2.0"
+  config.vm.provision 'ansible' do |ansible|
+    ansible.compatibility_mode='2.0'
     ansible.playbook = 'provision/setup.yml'
     ansible.host_vars = {
-      "ansible_ssh_extra_args" => "-o StrictHostKeyChecking=no"
+      'ansible_ssh_extra_args' => '-o StrictHostKeyChecking=no'
    }
-    ansible.limit = "all"
+    ansible.limit = 'all'
     # ansible.galaxy_role_file = "ansible/requirements.yml"
     # ansible.galaxy_command = "sudo ansible-galaxy install --role-file=%{role_file} /
     # --roles-path=%{roles_path} --force"
