@@ -107,10 +107,23 @@
               - "{{ node_version }}"
             global: "{{ node_version }}"
     
-    # - name: Install global node packages
-    #   ansible.builtin.shell: bash -lc "npm install {{ item }}"
-    #   loop:
-    #     - bundler
+    - name: Update/Install npm & yarn package managers
+      ansible.builtin.shell: /usr/bin/bash -lc "npm install -g {{ item }}"
+      loop:
+        - npm@latest
+        - yarn@latest
+      environment:
+        PATH: /home/{{ app_user }}/.asdf/shims:/home/{{ app_user }}/.asdf/bin:/usr/local/sbin 
+      become: true
+      become_user: "{{ app_user }}"
+
+    - name: asdf reshim nodejs
+      ansible.builtin.shell: /usr/bin/bash -lc "asdf reshim nodejs"
+      environment:
+        PATH: /home/{{ app_user }}/.asdf/shims:/{{ app_user }}/vagrant/.asdf/bin:/usr/local/sbin 
+      become: true
+      become_user: "{{ app_user }}"
+
 
     - name: Install Ruby gems
       ansible.builtin.shell: bash -lc "gem install {{ item }}"
