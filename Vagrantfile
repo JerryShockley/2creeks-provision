@@ -16,14 +16,27 @@ guest_db_port = '5432'
 guest_vite_dev_port = '3036'
 guest_vite_test_port = '3037'
 
-Vagrant.configure("2") do |config|
-  config.vm.box = "mpasternak/focal64-arm"
-  config.vm.define "development"
-  config.vm.network "private_network", ip: "192.168.78.33"
-  config.vm.network "forwarded_port", guest: guest_port,
-    host: vars['hport'], auto_correct: true
-  config.vm.network "forwarded_port", guest: guest_db_port,
-    host: vars['dbhport'], auto_correct: true
+Vagrant.configure('2') do |config|
+  config.vm.box = 'bento/ubuntu-22.04-arm64'
+  config.vm.define 'development'
+
+  config.vm.network 'forwarded_port',
+                    guest: guest_app_port,
+                    host: vars['app_hport'],
+                    auto_correct: true
+  config.vm.network 'forwarded_port',
+                    guest: guest_vite_dev_port,
+                    host: vars['vite_dev_hport'],
+                    auto_correct: true
+  config.vm.network 'forwarded_port',
+                    guest: guest_vite_test_port,
+                    host: vars['vite_test_hport'],
+                    auto_correct: true
+  config.vm.network 'forwarded_port',
+                    guest: guest_db_port,
+                    host: vars['db_hport'],
+                    auto_correct: true
+
   config.ssh.insert_key = false
   config.vm.synced_folder vars['hfolder'], guest_sync_dir, create: true
 
